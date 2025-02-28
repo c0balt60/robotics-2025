@@ -1,1 +1,4 @@
-# robotics-2025
+# Shooter Controller
+---
+
+Basic controller functionality for the shooter bot
