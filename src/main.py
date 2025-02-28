@@ -14,3 +14,7 @@ from vex import *
 brain = Brain()
 controller = Controller()
 
+# Drivetrain
+right: Motor = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
+left: Motor = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
+drivetrain: DriveTrain = DriveTrain(left, right)
