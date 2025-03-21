@@ -2,9 +2,9 @@
 #                                                                              #
 # 	Module:       main.py                                                      #
 # 	Author:       andr6521                                                     #
-# 	Created:      2/28/2025, 11:01:22 AM                                       #
-# 	Description:  Main branch containing base config for robots                #
-#   Bot:          ~general                                                     #
+# 	Created:      3/21/2025, 12:17:22 PM                                       #
+# 	Description:  Branch for the stacker bot                                   #
+#   Bot:          Stacker Bot                                                  #
 #                                                                              #
 # ---------------------------------------------------------------------------- #
 
@@ -18,6 +18,14 @@ controller = Controller()
 # Motor definitions
 left_motor = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
 right_motor = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
+extender_motor = Motor(Ports.PORT3, GearSetting.RATIO_18_1)
+lifter1_motor = Motor(Ports.PORT4, GearSetting.RATIO_18_1)
+lifter2_motor = Motor(Ports.PORT5, GearSetting.RATIO_18_1)
+
+# Variables
+drive_forward = False
+drive_backward = False
+direction = 0
 
 # TODO: COnfigure Wheel base
 # DriveTrain class.
@@ -37,10 +45,50 @@ def Drive(dir: DirectionType, velocity: int = 100, units: VelocityPercentUnits =
 
     drivetrain.drive(dir, velocity, units)
 
-def DriveMotors(right: Motor, left: Motor):
-    """_summary_
+# Main loop
+def main():
+    while True:
+        print()
 
-    Args:
-        right (Motor): _description_
-        left (Motor): _description_
+        sleep(50)
+
+# Input definitions
+def drive_pressed(): drive_forward = True
+def drive_released(): drive_forward = False
+def reverse_pressed(): drive_backward = True
+def reverse_released(): drive_backward = False
+
+def axis3_changed():
     """
+    Up and down
+    """
+    percent: float = controller.axis3.value()
+
+def axis4_changed():
+    """
+    Left and right
+    """
+    percent: float = controller.axis3.value()
+
+def axis1_changed():
+    """
+    Extend the length of stack receiver
+    """
+    percent: float = controller.axis1.value()
+
+def axis2_changed():
+    """
+    Elevate chain up or down
+    """
+    percent: float = controller.axis2.value()
+
+controller.buttonR2.pressed( drive_pressed )
+controller.buttonR2.released( drive_released )
+controller.buttonL2.pressed( reverse_pressed )
+controller.buttonL2.released( reverse_released )
+controller.axis3.changed( axis3_changed )
+controller.axis4.changed( axis4_changed )
+controller.axis2.changed( axis2_changed )
+controller.axis1.changed( axis1_changed )
+
+main()
