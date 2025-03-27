@@ -16,8 +16,8 @@ brain = Brain()
 controller = Controller()
 
 # Motor definitions
-left_motor = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
-right_motor = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
+left_motor = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
+right_motor = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
 extender_motor = Motor(Ports.PORT3, GearSetting.RATIO_18_1)
 lifter1_motor = Motor(Ports.PORT4, GearSetting.RATIO_18_1)
 lifter2_motor = Motor(Ports.PORT5, GearSetting.RATIO_18_1)
@@ -31,7 +31,7 @@ direction = 0
 # DriveTrain class.
 drivetrain = DriveTrain(left_motor, right_motor, 319.19, 295, 40, MM, 1)
 
-def Drive(dir: DirectionType, velocity: int = 100, units: VelocityPercentUnits = PERCENT): #type: ignore
+def Drive(dir: DirectionType.DirectionType, velocity: int = 100, units: VelocityPercentUnits = PERCENT): #type: ignore
     """
     Function for handling drive mechanics
 
@@ -45,24 +45,55 @@ def Drive(dir: DirectionType, velocity: int = 100, units: VelocityPercentUnits =
 
     drivetrain.drive(dir, velocity, units)
 
+def Turn(dir, velocty, units):
+
+    drivetrain.set_turn_velocity(velocty)
+    drivetrain.turn(dir, velocty, units)
+
 # Main loop
 def main():
     while True:
-        print()
 
+        Turn(
+            (direction > 0) and RIGHT or (direction < 0 and LEFT) or RIGHT,
+            (direction > 0 or direction < 0) and 75 or 0,
+            PERCENT
+        )
+
+        Drive(
+            drive_forward==True and FORWARD or (drive_backward==True and REVERSE or FORWARD),
+            (drive_forward==True or drive_backward==True) and 75 or 0,
+            PERCENT
+        )
+  
         sleep(50)
 
 # Input definitions
-def drive_pressed(): drive_forward = True
-def drive_released(): drive_forward = False
-def reverse_pressed(): drive_backward = True
-def reverse_released(): drive_backward = False
+def drive_pressed():
+    global drive_forward
+    drive_forward = True
+
+def drive_released(): 
+    global drive_forward
+    drive_forward = False
+
+def reverse_pressed():
+    global drive_backward
+    drive_backward = True
+
+def reverse_released():
+    global drive_backward
+    drive_backward = False
 
 def axis3_changed():
+    global direction
     """
     Up and down
     """
+    
     percent: float = controller.axis3.value()
+    print(percent)
+    direction = percent
 
 def axis4_changed():
     """
